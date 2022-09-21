@@ -25,7 +25,6 @@ const connect = async () => {
 
 //Post Method
 router.post('/post', async (req, res) => {
-    console.log('123')
     await connect();
      try {
         let _collection = await _database.collection("Alexa");
@@ -39,7 +38,6 @@ router.post('/post', async (req, res) => {
 
 //Get all Method
 router.get('/get', async (req, res) => {
-    console.log('123')
     await connect();
     try {
         let _collection = await _database.collection("Alexa");
