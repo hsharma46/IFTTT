@@ -8,7 +8,7 @@ let transporter = nodemailer.createTransport({
   },
 });
 
-function sendMail(subject,body) {
+const sendMail = async(subject,body) =>{
   let message = {
     from: "parasgoyal26@gmail.com",
     to: "trigger@applet.ifttt.com",
@@ -16,13 +16,7 @@ function sendMail(subject,body) {
     html: `<h1>${body}</h1>`,
   };
 
-  transporter.sendMail(message, function (err, info) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(info);
-    }
-  });
+  await transporter.sendMail(message);
 }
 
 module.exports = { sendMail };
