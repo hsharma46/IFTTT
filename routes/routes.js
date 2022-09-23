@@ -85,7 +85,7 @@ router.delete('/delete', async (req, res) => {
   await connect();
     try {
       let _collection = await _database.collection("Alexa");
-      await _collection.delete({});
+      await _collection.remove({});
       res.status(200).send({message:"Success"})
     }
     catch (error) {
