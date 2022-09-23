@@ -39,7 +39,7 @@ router.post('/post', async (req, res) => {
 
 //Get all Method
 router.get('/get', async (req, res) => {
-    // await connect();
+    await connect();
     try {
         let _collection = await _database.collection("Alexa");
         await _collection.insertOne({type:'GET',Phares : "",createOn:new Date()});
