@@ -43,7 +43,7 @@ router.get('/get', async (req, res) => {
     try {
         let _collection = await _database.collection("Alexa");
         await _collection.insertOne({type:'GET',Phares : "",createOn:new Date()});
-        await sendMail('GET Call with IFTTT With ALEXA',"Hello Alexa");
+        await sendMail('GET Call initiated with I F T T T and send response back to alexa',"Hello Alexa");
         res.status(200).send({message:"Success"})
     }
     catch (error) {
