@@ -25,4 +25,4 @@ function sendMail(subject,body) {
   });
 }
 
-module.export = { sendMail };
+module.exports = { sendMail };
