@@ -25,7 +25,7 @@ router.post("/post", async (req, res) => {
   await connect();
   try {
     let _collection = await _database.collection("Alexa");
-    console.log("Body : " + req.body);
+    console.log("Body : " + JSON.stringify(req));
     console.log("Body : " + JSON.stringify(req.body));
     await _collection.insertOne({
       type: "POST",
