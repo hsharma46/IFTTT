@@ -28,8 +28,10 @@ router.post('/post', async (req, res) => {
     await connect();
      try {
         let _collection = await _database.collection("Alexa");
+        console.log('Body : '+JSON.stringify(req.body))
         await _collection.insertOne({type:'POST',Phares : req.body,createOn:new Date()});
-        sendMail('Post Call',req.body)
+        await sendMail('Post Call',req.body);
+        console.log('Mail Sent');
         res.status(200).send({message:"Success"})
     }
     catch (error) {
@@ -43,7 +45,8 @@ router.get('/get', async (req, res) => {
     try {
         let _collection = await _database.collection("Alexa");
         await _collection.insertOne({type:'GET',Phares : "",createOn:new Date()});
-        await sendMail('Updated GET Call initiated with I F T T T and send response back to alexa',"Hello Alexa");
+        await sendMail('GET Call initiated with I F T T T and send response back to alexa',"Hello Alexa");
+        console.log('Mail Sent');        
         res.status(200).send({message:"Success"})
     }
     catch (error) {
