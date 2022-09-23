@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { MongoClient,ServerApiVersion  } = require("mongodb");;
+const { MongoClient,ServerApiVersion  } = require("mongodb");
+const SendmailTransport = require('nodemailer/lib/sendmail-transport');
 const uri = "mongodb+srv://ParasMongoDB:ZCcF6nKxSo1AvOFc@Cluster0.ansvqnc.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
-
+const mail = require('../utils/mail');
 
 
 let _database=undefined;
@@ -29,6 +30,7 @@ router.post('/post', async (req, res) => {
      try {
         let _collection = await _database.collection("Alexa");
         await _collection.insertOne({type:'POST',Phares : req.body,createOn:new Date()});
+        mail.sendMail('Post Call',req.body)
         res.status(200).send({message:"Success"})
     }
     catch (error) {
@@ -42,6 +44,7 @@ router.get('/get', async (req, res) => {
     try {
         let _collection = await _database.collection("Alexa");
         await _collection.insertOne({type:'GET',Phares : "",createOn:new Date()});
+        mail.sendMail('Get Call',"Hello Alexa");
         res.status(200).send({message:"Success"})
     }
     catch (error) {
