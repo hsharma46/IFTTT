@@ -41,8 +41,8 @@ router.post('/post', async (req, res) => {
 router.get('/get', async (req, res) => {
     // await connect();
     try {
-        // let _collection = await _database.collection("Alexa");
-        // await _collection.insertOne({type:'GET',Phares : "",createOn:new Date()});
+        let _collection = await _database.collection("Alexa");
+        await _collection.insertOne({type:'GET',Phares : "",createOn:new Date()});
         sendMail('Get Call',"Hello Alexa");
         res.status(200).send({message:"Success"})
     }
