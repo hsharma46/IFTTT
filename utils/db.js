@@ -15,4 +15,8 @@ const connect = async () => {
   }
 };
 
-module.exports={connect,collection:_database.collection}
+const _collection= async(name)=>{
+    await _database.collection(name);
+}
+
+module.exports={connect,collection:_collection}
