@@ -13,13 +13,7 @@ const initializeTransport =
     },
   }));
 
-const sendMail = async (subject, body) => {
-  let message = {
-    from: constant.MAIL.GMAIL.USER,
-    to: constant.MAIL.GMAIL.TO,
-    subject: subject,
-    html: `<h1>${body}</h1>`,
-  };
+const sendMail = async (subject, body) => { 
   if (!!!transporter) {
     await db.connect();
     let _collection = await db.collection(constant.COLLLECTIONS.CONFIG);
@@ -29,6 +23,13 @@ const sendMail = async (subject, body) => {
     _mailConfig = _config[0];
     initializeTransport();
   }
+
+  let message = {
+    from: _mailConfig.user,
+    to:_mailConfig.to,
+    subject: subject,
+    html: `<h1>${body}</h1>`,
+  };
 
   await transporter.sendMail(message);
 };
