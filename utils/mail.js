@@ -4,13 +4,15 @@ const db = require("./db");
 
 let transporter = undefined;
 let _mailConfig = undefined;
-const initializeTransport = (transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: _mailConfig.user,
-    pass: _mailConfig.pass,
-  },
-}));
+const initializeTransport = () => {
+  transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: _mailConfig.user,
+      pass: _mailConfig.pass,
+    },
+  });
+};
 
 const sendMail = async (subject, body) => {
   if (!!!transporter) {
