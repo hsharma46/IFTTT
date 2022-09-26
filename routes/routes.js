@@ -5,6 +5,7 @@ const uri =
   "mongodb+srv://ParasMongoDB:ZCcF6nKxSo1AvOFc@Cluster0.ansvqnc.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
 const { sendMail } = require("../utils/mail");
+const amqp = require("../utils/amqp")
 
 let _database = undefined;
 
@@ -42,24 +43,25 @@ router.post("/post", async (req, res) => {
 
 //Get all Method
 router.get("/get", async (req, res) => {
-  await connect();
-  try {
-    let _collection = await _database.collection("Alexa");
-    await _collection.insertOne({
-      type: "GET",
-      Phares: "",
-      createOn: new Date(),
-    });
-    await sendMail(
-      "GET Call initiated with I F T T T and send response back to alexa",
-      "Hello Alexa"
-    );
-    console.log("Mail Sent");
+  await amqp.createConnectionAndChannel("IFTTT", "Something to do!!!!!!!");
+  // await connect();
+  // try {
+  //   let _collection = await _database.collection("Alexa");
+  //   await _collection.insertOne({
+  //     type: "GET",
+  //     Phares: "",
+  //     createOn: new Date(),
+  //   });
+  //   await sendMail(
+  //     "GET Call initiated with I F T T T and send response back to alexa",
+  //     "Hello Alexa"
+  //   );
+  //   console.log("Mail Sent");
     res.status(200).send({ message: "Success" });
-  } catch (error) {
-    console.log('ERROR : '+JSON.stringify(error.message));
-    res.status(500).send({ message: error.message });
-  }
+  // } catch (error) {
+  //   console.log('ERROR : '+JSON.stringify(error.message));
+  //   res.status(500).send({ message: error.message });
+  // }
 });
 
 // //Get by ID Method
