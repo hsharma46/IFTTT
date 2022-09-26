@@ -1,6 +1,6 @@
 const _collections = {
   ALEXA: "Alexa",
-  CONFIG:'config'
+  CONFIG:'Config'
 };
 
 const _configType={

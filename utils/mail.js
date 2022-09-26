@@ -8,8 +8,8 @@ const initializeTransport = () => {
   transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: _mailConfig.user,
-      pass: _mailConfig.pass,
+      user: _mailConfig.username,
+      pass: _mailConfig.password,
     },
   });
 };
@@ -23,12 +23,12 @@ const sendMail = async (subject, body) => {
       .toArray();
 
     console.log("mail : " + JSON.stringify(_config));
-    _mailConfig = _config[0];
+    _mailConfig = _config[0].config;
     initializeTransport();
   }
 
   let message = {
-    from: _mailConfig.user,
+    from: _mailConfig.username,
     to: _mailConfig.to,
     subject: subject,
     html: `<h1>${body}</h1>`,

@@ -12,7 +12,7 @@ async function createConnection() {
       let _cloudAQMP = await _collection
         .find({ name: constant.CONFIG_TYPE.RABBIT_MQ })
         .toArray();
-      _rabbitMQ = _cloudAQMP[0];
+      _rabbitMQ = _cloudAQMP[0].config;
     }
     resp.result = await amqp.connect(_createURL(_rabbitMQ));
   } catch (err) {
@@ -37,8 +37,8 @@ async function createConnectionAndChannel(message) {
   const conn = await createConnection();
   if (!!conn.result) {
     const channel = await createChannel(conn.result);
-    await channel.result.assertQueue(queueName).then(function (ok) {
-      return channel.result.sendToQueue(queueName, Buffer.from(message));
+    await channel.result.assertQueue(_rabbitMQ.queuename).then(function (ok) {
+      return channel.result.sendToQueue(_rabbitMQ.queuename, Buffer.from(JSON.stringify(message)));
     });
 
     setTimeout(function () {
@@ -48,7 +48,7 @@ async function createConnectionAndChannel(message) {
 }
 
 function _createURL(config) {
-  return `${config.amqp}://${config.username}:${config.password}@${uri}/${config.vhost}`;
+  return `${config.amqp}://${config.username}:${config.password}@${config.url}/${config.vhost}`;
 }
 
 module.exports = { createConnectionAndChannel };
