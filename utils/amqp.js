@@ -1,10 +1,20 @@
-var amqp = require("amqplib");
-var url = "amqps://przasbmo:oVzR5gvLwFc-llbrUMRLOmGnRmefeWc4@puffin.rmq2.cloudamqp.com/przasbmo"; // default to localhost
+const amqp = require("amqplib");
+const constant = require("./constant");
+const db = require("./db");
 
+let _rabbitMQ = undefined;
 async function createConnection() {
   let resp = { Success: true, result: null, message: null };
   try {
-    resp.result = await amqp.connect(url);
+    if (!!!_rabbitMQ) {
+      await db.connect();
+      let _collection = await db.collection(constant.COLLLECTIONS.CONFIG);
+      let _cloudAQMP = await _collection
+        .find({ name: constant.CONFIG_TYPE.RABBIT_MQ })
+        .toArray();
+      _rabbitMQ = _cloudAQMP[0];
+    }
+    resp.result = await amqp.connect(_createURL(_rabbitMQ));
   } catch (err) {
     resp.Success = false;
     resp.message = err;
@@ -23,20 +33,22 @@ async function createChannel(conn) {
   return resp;
 }
 
-async function createConnectionAndChannel(queueName, message) {
+async function createConnectionAndChannel(message) {
   const conn = await createConnection();
   if (!!conn.result) {
     const channel = await createChannel(conn.result);
     await channel.result.assertQueue(queueName).then(function (ok) {
-      return channel.result.sendToQueue(queueName, Buffer.from(message));      
+      return channel.result.sendToQueue(queueName, Buffer.from(message));
     });
 
-    setTimeout(function() {
+    setTimeout(function () {
       conn.result.close();
-      }, 500);
-        
+    }, 500);
   }
 }
 
+function _createURL(config) {
+  return `${config.amqp}://${config.username}:${config.password}@${uri}/${config.vhost}`;
+}
 
 module.exports = { createConnectionAndChannel };

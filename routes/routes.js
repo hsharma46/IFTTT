@@ -1,107 +1,81 @@
 const express = require("express");
 const router = express.Router();
-const { MongoClient, ServerApiVersion } = require("mongodb");
-const uri =
-  "mongodb+srv://ParasMongoDB:ZCcF6nKxSo1AvOFc@Cluster0.ansvqnc.mongodb.net/?retryWrites=true&w=majority";
-const client = new MongoClient(uri);
 const { sendMail } = require("../utils/mail");
-const amqp = require("../utils/amqp")
-
-let _database = undefined;
-
-const connect = async () => {
-  try {
-    if (!!!_database) {
-      await client.connect();
-      console.log(`[INFO] [DATABASE] [CONNECTED-SUCCESSFULLY]`);
-      _database = client.db("IFTTT");
-    }
-  } catch (err) {
-    throw new Error("Error in DB Connection");
-  }
-};
+const amqp = require("../utils/amqp");
+const db = require("../utils/db");
+const constant = require("../utils/constant")
 
 //Post Method
 router.post("/post", async (req, res) => {
-  await connect();
+  await db.connect();
   try {
-    let _collection = await _database.collection("Alexa");
-    console.log("Body : " + JSON.stringify(req.body));
+    let _collection = await db.collection(constant.COLLLECTIONS.ALEXA);
+
     await _collection.insertOne({
-      type: "POST",
+      type: constant.METHOD_TYPES.POST,
       Phares: req.body,
       createOn: new Date(),
     });
+
     await sendMail("Post Call", req.body);
-    console.log("Mail Sent");
     res.status(200).send({ message: "Success" });
   } catch (error) {
-    console.log('ERROR : '+JSON.stringify(error.message));
+    console.log("ERROR : " + JSON.stringify(error.message));
     res.status(500).send({ message: error.message });
   }
 });
 
 //Get all Method
-router.get("/get", async (req, res) => {
-  await amqp.createConnectionAndChannel("IFTTT", "Something to do!!!!!!!");
-  // await connect();
-  // try {
-  //   let _collection = await _database.collection("Alexa");
-  //   await _collection.insertOne({
-  //     type: "GET",
-  //     Phares: "",
-  //     createOn: new Date(),
-  //   });
-  //   await sendMail(
-  //     "GET Call initiated with I F T T T and send response back to alexa",
-  //     "Hello Alexa"
-  //   );
-  //   console.log("Mail Sent");
+router.get("/sendmail", async (req, res) => {
+  await db.connect();
+  try {
+    let _collection = await db.collection(constant.COLLLECTIONS.ALEXA);
+    await _collection.insertOne({
+      type: constant.METHOD_TYPES.GET,
+      Phares: "Send Mail to trigger Applet",
+      createOn: new Date(),
+    });
+
+    await sendMail(
+      "GET Call initiated with I F T T T and send response back to alexa",
+      "Hello Alexa"
+    );
     res.status(200).send({ message: "Success" });
-  // } catch (error) {
-  //   console.log('ERROR : '+JSON.stringify(error.message));
-  //   res.status(500).send({ message: error.message });
-  // }
+
+  } catch (error) {
+    console.log("ERROR : " + JSON.stringify(error.message));
+    res.status(500).send({ message: error.message });
+  }
 });
 
-// //Get by ID Method
-// router.get('/getOne/:id', async (req, res) => {
-//     try {
-//         const data = await Model.findById(req.params.id);
-//         res.send(data)
-//     }
-//     catch (error) {
-//         res.status(500).send({ message: error.message })
-//     }
-// })
+//Get all Method
+router.get("/moverobot", async (req, res) => {
+  await db.connect();
+  try {
+    let _collection = await db.collection(constant.COLLLECTIONS.ALEXA);
+    await _collection.insertOne({
+      type: constant.METHOD_TYPES.GET,
+      Phares: "Move Robot Command",
+      createOn: new Date(),
+    });
 
-// //Update by ID Method
-// router.patch('/update/:id', async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const updatedData = req.body;
-//         const options = { new: true };
-
-//         const result = await Model.findByIdAndUpdate(
-//             id, updatedData, options
-//         )
-
-//         res.send(result)
-//     }
-//     catch (error) {
-//         res.status(500).send({ message: error.message })
-//     }
-// })
+    amqp.createConnectionAndChannel({ coordinate: [["-0.16","0.764","0"],["0.3","0.764","0"]] });
+    res.status(200).send({ message: "Success" });
+  } catch (error) {
+    console.log("ERROR : " + JSON.stringify(error.message));
+    res.status(500).send({ message: error.message });
+  }
+});
 
 //Delete by ID Method
 router.delete("/delete", async (req, res) => {
-  await connect();
+  await db.connect();
   try {
-    let _collection = await _database.collection("Alexa");
+    let _collection = await db.collection(constant.COLLLECTIONS.ALEXA);
     await _collection.remove({});
     res.status(200).send({ message: "Success" });
   } catch (error) {
-    console.log('ERROR : '+JSON.stringify(error.message));
+    console.log("ERROR : " + JSON.stringify(error.message));
     res.status(400).send({ message: error.message });
   }
 });
