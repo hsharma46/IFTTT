@@ -20,6 +20,7 @@ const sendMail = async (subject, body) => {
     let _config = await _collection
       .find({ name: constant.CONFIG_TYPE.GMAIL })
       .toArray();
+      console.log('mail : '+JSON.stringify(_config));
     _mailConfig = _config[0];
     initializeTransport();
   }
