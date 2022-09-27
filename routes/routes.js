@@ -59,7 +59,9 @@ router.get("/moverobot", async (req, res) => {
       createOn: new Date(),
     });
 
-    amqp.createConnectionAndChannel({ coordinate: [["-0.16","0.764","0"],["0.3","0.764","0"]] });
+    let _device_coordinates_collection = await db.collection(constant.COLLLECTIONS.DEVICE_COORDINATES);
+    let _device_coordinates_data=await _device_coordinates_collection.find({name:'turtel-boat'}).toArray();
+    amqp.createConnectionAndChannel({ coordinates: _device_coordinates_data[0].coordinates });
     res.status(200).send({ message: "Success" });
   } catch (error) {
     console.log("ERROR : " + JSON.stringify(error.message));

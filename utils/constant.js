@@ -1,6 +1,7 @@
 const _collections = {
   ALEXA: "Alexa",
-  CONFIG:'Config'
+  CONFIG:'Config',
+  DEVICE_COORDINATES:'DeviceCoordinates'
 };
 
 const _configType={
