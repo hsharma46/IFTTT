@@ -53,15 +53,16 @@ router.get("/moverobot", async (req, res) => {
   await db.connect();
   try {
     let _collection = await db.collection(constant.COLLLECTIONS.ALEXA);
+    let _pointName = req.query['point'];
     await _collection.insertOne({
       type: constant.METHOD_TYPES.GET,
       Phares: "Move Robot Command",
       createOn: new Date(),
     });
 
-    let _device_coordinates_collection = await db.collection(constant.COLLLECTIONS.DEVICE_COORDINATES);
-    let _device_coordinates_data=await _device_coordinates_collection.find({name:'turtel-boat'}).toArray();
-    amqp.createConnectionAndChannel({ coordinates: _device_coordinates_data[0].coordinates });
+    let _coordinates_collection = await db.collection(constant.COLLLECTIONS.COORDINATES);
+    let _coordinates_data=await _coordinates_collection.find({name:_pointName.toUpperCase()}).toArray();
+    amqp.createConnectionAndChannel({ coordinates: [_coordinates_data[0].coordinate] });
     res.status(200).send({ message: "Success" });
   } catch (error) {
     console.log("ERROR : " + JSON.stringify(error.message));
