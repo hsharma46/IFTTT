@@ -52,6 +52,7 @@ router.get("/sendmail", async (req, res) => {
 router.get("/moverobot", async (req, res) => {
   await db.connect();
   try {
+    let _message = "Success";
     let _collection = await db.collection(constant.COLLLECTIONS.ALEXA);
     let _pointName = req.query['point'];
     await _collection.insertOne({
@@ -62,8 +63,11 @@ router.get("/moverobot", async (req, res) => {
 
     let _coordinates_collection = await db.collection(constant.COLLLECTIONS.COORDINATES);
     let _coordinates_data=await _coordinates_collection.find({name:_pointName.toUpperCase()}).toArray();
-    amqp.createConnectionAndChannel({ command : constant.ROBOT_COMMAND.MOVE , coordinates: [_coordinates_data[0].coordinate] });
-    res.status(200).send({ message: "Success" });
+    if(_coordinates_data.length != 0)
+      amqp.createConnectionAndChannel({ command : constant.ROBOT_COMMAND.MOVE , coordinates: [_coordinates_data[0].coordinate] });
+    else
+      _message=`No Point exists with name ${_pointName}`;
+    res.status(200).send({ message: _message });
   } catch (error) {
     console.log("ERROR : " + JSON.stringify(error.message));
     res.status(500).send({ message: error.message });
