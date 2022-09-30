@@ -4,6 +4,11 @@ const _collections = {
   COORDINATES:'Coordinates'
 };
 
+const _robotCommand={
+    MOVE:'move',
+    CANCEL:'cancel'
+}
+
 const _configType={
     RABBIT_MQ:'rabbitmq',
     GMAIL:'gmail'
@@ -21,6 +26,7 @@ const _config={
 module.exports = {
     COLLLECTIONS: _collections,
     METHOD_TYPES: _methodType,
+    ROBOT_COMMAND: _robotCommand,
     CONFIG:_config,
     CONFIG_TYPE:_configType
 }
