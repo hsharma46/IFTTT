@@ -5,8 +5,10 @@ const _collections = {
 };
 
 const _robotCommand={
+    CANCEL:'cancel',
     MOVE:'move',
-    CANCEL:'cancel'
+    PAUSE:'pause',
+    RESUME:'pause',
 }
 
 const _configType={

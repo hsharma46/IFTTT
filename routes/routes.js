@@ -74,17 +74,19 @@ router.get("/moverobot", async (req, res) => {
   }
 });
 
-router.get("/cancel", async (req, res) => {
+router.get("/command", async (req, res) => {
   await db.connect();
   try {
     let _collection = await db.collection(constant.COLLLECTIONS.ALEXA);
+    let _type = !!req.query['type'] ? req.query['type'].toLowerCase() : undefined;
+    
     await _collection.insertOne({
       type: constant.METHOD_TYPES.GET,
-      Phares: `${constant.ROBOT_COMMAND.CANCEL} : Cancel Current Route`,
+      Phares: `Command : ${_type}`,
       createOn: new Date(),
     });
 
-    amqp.createConnectionAndChannel({ command : constant.ROBOT_COMMAND.CANCEL , coordinates: null });
+    amqp.createConnectionAndChannel({ command : _type , coordinates: null });
     res.status(200).send({ message: "Success" });
   } catch (error) {
     console.log("ERROR : " + JSON.stringify(error.message));
