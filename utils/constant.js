@@ -8,7 +8,7 @@ const _robotCommand={
     CANCEL:'cancel',
     MOVE:'move',
     PAUSE:'pause',
-    RESUME:'pause',
+    RESUME:'resume',
 }
 
 const _configType={

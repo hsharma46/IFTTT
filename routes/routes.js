@@ -79,20 +79,9 @@ router.get("/moverobot", async (req, res) => {
 });
 
 router.get("/command", async (req, res) => {
-  await db.connect();
   try {
     let _message = "Success";
-    let _collection = await db.collection(constant.COLLLECTIONS.ALEXA);
-    let _type = !!req.query["type"]
-      ? req.query["type"].toLowerCase()
-      : undefined;
-
-    await _collection.insertOne({
-      type: constant.METHOD_TYPES.GET,
-      Phares: `Command : ${_type}`,
-      createOn: new Date(),
-    });
-
+    let _type = !!req.query["type"] ? req.query["type"].toLowerCase() : undefined;
     if (
       [
         constant.ROBOT_COMMAND.CANCEL,
@@ -100,10 +89,19 @@ router.get("/command", async (req, res) => {
         constant.ROBOT_COMMAND.PAUSE,
       ].includes(_type)
     ) {
-      amqp.createConnectionAndChannel({ command: _type, coordinates: null });
-    } else {
       _message = `No command exists with name ${_type}`;
+    } else {
+      await db.connect();
+      let _collection = await db.collection(constant.COLLLECTIONS.ALEXA);
+      await _collection.insertOne({
+        type: constant.METHOD_TYPES.GET,
+        Phares: `Command : ${_type}`,
+        createOn: new Date(),
+      });
+
+      amqp.createConnectionAndChannel({ command: _type, coordinates: null });
     }
+
     res.status(200).send({ message: _message });
   } catch (error) {
     console.log("ERROR : " + JSON.stringify(error.message));
